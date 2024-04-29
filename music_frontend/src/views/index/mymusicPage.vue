@@ -1,0 +1,94 @@
+<template>
+
+  <div>
+    <el-image src="/src/resources/image/mymusic-bacimg.jpg" class="header-img"></el-image>
+  </div>
+  <div style="padding: 20px 40px">
+    <div style="padding: 10px">
+      <el-button color="#31C27C" style="color: #FAFAFA">播放全部</el-button>
+      <el-button>批量操作</el-button>
+    </div>
+    <audio ref="audio" @ended="onAudioEnded"></audio>
+    <el-table :data="musicList" style="width: 100%">
+      <el-table-column type="index" width="50" />
+      <el-table-column prop="musicName" label="音乐名称"></el-table-column>
+      <el-table-column prop="author" label="歌手"></el-table-column>
+      <el-table-column prop="duration" label="时长"></el-table-column>
+      <el-table-column>
+        <template #default="{row}">
+          <el-icon size="24" color="#616161" class="icon">
+            <VideoPause v-if="PlayingMap.get(row.musicName)" @click="stop()"/>
+            <VideoPlay v-else @click="play(row.musicName, row.id)"/>
+          </el-icon>
+          <el-icon size="24" @click="remove(row)" class="icon"><Delete /></el-icon>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+
+</template>
+
+<script setup>
+import {ref, reactive, onBeforeMount} from "vue";
+import {get, post} from "@/net";
+import {ElMessage} from "element-plus";
+import {VideoPlay, VideoPause, Delete} from "@element-plus/icons-vue";
+
+const user = JSON.parse(sessionStorage.getItem('account'))
+const musicList = reactive([])
+const audio = ref()
+let PlayingName = ""
+let PlayingMap = ref(new Map())
+
+const onAudioEnded = () => {
+  PlayingMap.value.set(PlayingName, false)
+}
+const play = (name, id)=>{
+  PlayingMap.value.set(PlayingName, false)
+  PlayingName = name
+
+  audio.value.src = `/src/resources/music/${name}.mp3`
+  PlayingMap.value.set(name, true)
+  audio.value.play()
+  get(`/api/music/playIt/${id}`, (msg)=>{})
+}
+const stop = ()=>{
+  PlayingMap.value.set(PlayingName, false)
+  audio.value.pause()
+}
+const remove = (row)=> {
+  PlayingMap.value.set(row.musicName, false)
+  audio.value.pause()
+  let index = musicList.indexOf(row);
+  if (index !== -1) {
+    musicList.splice(index, 1);
+  }
+
+  post('/api/music/disCollectIt', {
+    userId: user.id,
+    musicId: row.id
+  }, (msg)=>{
+    ElMessage.success(msg)
+  })
+}
+
+onBeforeMount(()=>{
+  get('/api/music/all-collect-detail', (msg, data)=>{
+    Object.assign(musicList, data)
+    for(const music in musicList){
+      PlayingMap.value.set(music.musicName, false)
+    }
+  })
+})
+</script>
+
+<style scoped>
+  .header-img{
+    width: 100%;
+    height: 380px;
+  }
+
+  .icon{
+    margin: 2px 10px 0 0;
+  }
+</style>
