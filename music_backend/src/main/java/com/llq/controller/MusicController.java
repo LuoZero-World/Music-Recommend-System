@@ -38,6 +38,14 @@ public class MusicController {
         return RestBean.success( hot18Musics, "信息获取成功");
     }
 
+    @GetMapping("/recommend5")
+    public RestBean<List<MusicDTO>> getRecommend5MusicList(@SessionAttribute("account") AccountDTO account){
+        int userId = account.getId();
+        List<MusicDTO> recommendMusicList = musicService.getRecommendMusicList(userId);
+        if(recommendMusicList == null || recommendMusicList.isEmpty()) return RestBean.failure(404, "未找到相关数据");
+        return RestBean.success( recommendMusicList, "信息获取成功");
+    }
+
     @PostMapping("/collectIt")
     public RestBean<String> collectMusic(@RequestParam int userId, @RequestParam int musicId){
         //存入收藏信息

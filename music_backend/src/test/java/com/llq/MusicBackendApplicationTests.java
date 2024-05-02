@@ -5,7 +5,11 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.llq.algorithm.CollaborativeUtil;
+import com.llq.algorithm.ContentUtil;
+import com.llq.algorithm.UserCFUtil;
 import com.llq.entity.tempIDStore;
+import com.llq.mapper.TagMapper;
 import com.llq.service.AuthorizeService;
 import com.llq.service.MusicService;
 import com.llq.service.TagService;
@@ -13,21 +17,21 @@ import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+import java.util.Map;
+
 @SpringBootTest
 class MusicBackendApplicationTests {
-
-    @Resource
-    AuthorizeService authorizeService;
 
     @Resource
     MusicService musicService;
 
     @Resource
-    TagService tagService;
+    CollaborativeUtil collaborativeUtil;
 
     @Test
     void contextLoads() {
-        musicService.addMusicPlayNum(1, 2);
+        System.out.println(collaborativeUtil.getRecommendations(1));
     }
 
     @Test

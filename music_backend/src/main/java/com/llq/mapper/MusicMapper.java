@@ -1,6 +1,7 @@
 package com.llq.mapper;
 
 import com.llq.dto.MusicDTO;
+import com.llq.entity.AccountRating;
 import com.llq.entity.tempIDStore;
 import org.apache.ibatis.annotations.*;
 
@@ -45,4 +46,18 @@ public interface MusicMapper {
 
     @Insert("insert into music_type(music_id, tag_id) values(#{musicID}, #{tagID})")
     void addMusicType(@Param("musicID") int musicId, @Param("tagID") int tagId);
+
+    @Select("select uc.user_id,uc.music_id,IFNULL(up.play_num, 0) as play_num, 1 as collected\n" +
+            "from user_collect uc\n" +
+            "left join user_play up on uc.user_id=up.user_id and uc.music_id=up.music_id\n" +
+            "UNION ALL\n" +
+            "select up.user_id,up.music_id,up.play_num as play_num, !isNULL(uc.user_id) as collected\n" +
+            "from user_collect uc\n" +
+            "right join user_play up on uc.user_id=up.user_id and uc.music_id=up.music_id")
+    @Results(value = {
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "musicId", column = "music_id"),
+            @Result(property = "playNum", column = "play_num"),
+    })
+    List<AccountRating> getAllAccountRating();
 }

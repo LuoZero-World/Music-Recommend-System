@@ -88,15 +88,11 @@ const disCollect = (id) =>{
 
 onBeforeMount(()=>{
   //获取歌曲
-  get('/api/music/hot/3', (msg, data)=>{
+  get('/api/music/recommend5', (msg, data)=>{
     Object.assign(musics, data)
     for(const music in musics){
       PlayingMap.value.set(music.musicName, false)
     }
-  })
-  //获取用户收藏信息
-  get('/api/music/all-collect-id', (msg, data)=>{
-    collectSet.value = new Set(data);
   })
 })
 </script>

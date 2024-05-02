@@ -8,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Author 李林麒
@@ -30,6 +31,19 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Integer> getLikedTagIDList(int userId) {
         return tagMapper.getLikedTagIDList(userId);
+    }
+
+    @Override
+    public Map<Integer, List<Integer>> getMusicTagIDMap() {
+        Map<Integer, List<Integer>> resMap = new HashMap<>();
+        tagMapper.getMusicTagIDMap().forEach(entry -> {
+            List<Integer> list = Arrays.stream(entry.getTagIds().split(","))
+                    .map(Integer::parseInt)
+                    .toList();
+            resMap.put(entry.getMusicId(), list);
+        });
+
+        return resMap;
     }
 
     @Override

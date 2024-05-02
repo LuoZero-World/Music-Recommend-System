@@ -1,16 +1,20 @@
 package com.llq.service.impl;
 
+import com.llq.algorithm.CollaborativeUtil;
 import com.llq.dto.MusicDTO;
+import com.llq.entity.AccountRating;
 import com.llq.entity.tempIDStore;
 import com.llq.mapper.MusicMapper;
 import com.llq.service.MusicService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -24,6 +28,9 @@ public class MusicServiceImpl implements MusicService {
 
     @Resource
     MusicMapper musicMapper;
+
+    @Resource @Lazy
+    CollaborativeUtil collaborativeUtil;
 
     @Override
     public List<MusicDTO> getHot18Musics() {
@@ -40,6 +47,18 @@ public class MusicServiceImpl implements MusicService {
     public void addMusic(String name, String artist, String duration, int[] tag, tempIDStore store) {
         musicMapper.addMusic(name, artist, duration, store);
         for(int tagId : tag) musicMapper.addMusicType(store.getId(), tagId);
+    }
+
+    @Override
+    public List<AccountRating> getAccountRatingList() {
+        return musicMapper.getAllAccountRating();
+    }
+
+    @Override
+    public List<MusicDTO> getRecommendMusicList(int userId) {
+        return collaborativeUtil.getRecommendations(userId).keySet().stream()
+                .map(musicId ->  musicMapper.getMusicByID(musicId))
+                .toList();
     }
 
     @Override

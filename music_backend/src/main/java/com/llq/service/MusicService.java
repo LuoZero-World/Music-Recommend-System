@@ -1,6 +1,7 @@
 package com.llq.service;
 
 import com.llq.dto.MusicDTO;
+import com.llq.entity.AccountRating;
 import com.llq.entity.tempIDStore;
 
 import java.util.List;
@@ -22,4 +23,8 @@ public interface MusicService {
     List<MusicDTO> getHotMusicsByTagId(int tagId);
 
     void addMusic(String name, String artist, String duration, int[] tag, tempIDStore store);
+
+    List<AccountRating> getAccountRatingList();
+
+    List<MusicDTO> getRecommendMusicList(int userId);
 }
