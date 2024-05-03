@@ -30,9 +30,10 @@
 
 <script setup>
 import {ref, reactive, onBeforeMount} from "vue";
-import {get, post} from "@/net";
+import {get, post, postFile} from "@/net";
 import {ElMessage} from "element-plus";
 import {VideoPlay, VideoPause, Delete} from "@element-plus/icons-vue";
+import {useBlobStore} from "@/stores";
 
 const user = JSON.parse(sessionStorage.getItem('account'))
 const musicList = reactive([])
@@ -43,13 +44,25 @@ let PlayingMap = ref(new Map())
 const onAudioEnded = () => {
   PlayingMap.value.set(PlayingName, false)
 }
-const play = (name, id)=>{
+const play = async (name, id)=>{
+  let url = useBlobStore().getBlobURL(name)
+
+  if(url === undefined){
+    await postFile('/api/media/music', {
+      musicName: name
+    }, (response)=>{
+      // 创建一个Blob URL
+      url = useBlobStore().createAndSetBlobURL(name, response.data)
+    })
+  }
+  //去除上一首的状态,设置下一首状态
   PlayingMap.value.set(PlayingName, false)
   PlayingName = name
-
-  audio.value.src = `/src/resources/music/${name}.mp3`
   PlayingMap.value.set(name, true)
-  audio.value.play()
+  //播放
+  audio.value.src = url;
+  audio.value.play();
+  //播放数+1
   get(`/api/music/playIt/${id}`, (msg)=>{})
 }
 const stop = ()=>{

@@ -16,7 +16,13 @@ import com.llq.service.TagService;
 import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.InputStreamResource;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +36,10 @@ class MusicBackendApplicationTests {
     CollaborativeUtil collaborativeUtil;
 
     @Test
-    void contextLoads() {
-        System.out.println(collaborativeUtil.getRecommendations(1));
+    void contextLoads() throws FileNotFoundException {
+        String path = this.getClass().getResource("/music").getPath() + "/心墙.mp3";
+        org.springframework.core.io.Resource resource = new InputStreamResource(new FileInputStream(path));
+        System.out.println(resource);
     }
 
     @Test

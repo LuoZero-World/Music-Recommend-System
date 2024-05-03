@@ -1,12 +1,19 @@
-import {computed, ref} from 'vue'
 import {defineStore} from 'pinia'
 
-export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
+export const useBlobStore = defineStore('blobMap', () => {
+  const blobURLMap = new Map()
+  function getBlobURL(name){
+    return blobURLMap.get(name)
   }
-
-  return { count, doubleCount, increment }
+  function createAndSetBlobURL(name, data){
+    const url = window.URL.createObjectURL(data);
+    blobURLMap.set(name, url)
+    return url
+  }
+  function deleteBlobURL(name){
+    let url = blobURLMap.get(name)
+    blobURLMap.delete(name)
+    window.URL.revokeObjectURL(url)
+  }
+  return { getBlobURL, createAndSetBlobURL, deleteBlobURL }
 })

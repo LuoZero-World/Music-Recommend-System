@@ -29,4 +29,19 @@ function get(url, success, failure=defaultFailure, error=defaultError){
     }).catch(error)
 }
 
-export {get, post}
+async function postFile(url, data, success, failure = defaultFailure, error = defaultError) {
+    try {
+        const response = await axios.post(url, data, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            responseType: 'blob',
+            withCredentials: true
+        });
+        success(response);
+    } catch (err) {
+        error(err); // 假设 error 是一个全局定义的错误处理函数
+    }
+}
+
+export {get, post, postFile}

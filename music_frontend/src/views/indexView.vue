@@ -39,7 +39,7 @@
 <script setup>
 import {ElMessage} from "element-plus";
 import router from "@/router";
-import {get} from "@/net"
+import {get, postFile} from "@/net"
 import {ref} from "vue";
 import {Headset} from "@element-plus/icons-vue";
 
