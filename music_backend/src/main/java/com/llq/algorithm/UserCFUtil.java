@@ -2,12 +2,13 @@ package com.llq.algorithm;
 
 import com.llq.entity.AccountRating;
 import com.llq.service.MusicService;
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +23,7 @@ public class UserCFUtil implements RecommendationAlgorithm{
     MusicService musicService;
 
     //用户对于各首歌曲的评分表 - 即用户-音乐评分矩阵
-    private static Map<Integer,Map<Integer,Double>> userRatings = new HashMap<>();
+    private static final Map<Integer,Map<Integer,Double>> userRatings = new ConcurrentHashMap<>();
 
 
     public double calculateSimilarity(Map<Integer, Double> myRatings, Map<Integer, Double> otherRatings){
@@ -46,7 +47,7 @@ public class UserCFUtil implements RecommendationAlgorithm{
     public void flushRatings(){
         /* 构建用户-音乐评分矩阵 */
         List<AccountRating> list = musicService.getAccountRatingList();
-        userRatings = list.stream()
+        Map<Integer, HashMap<Integer, Double>> collect = list.stream()
                 .collect(Collectors.groupingBy(
                         AccountRating::getUserId,
                         Collectors.toMap(
@@ -54,10 +55,14 @@ public class UserCFUtil implements RecommendationAlgorithm{
                                 userRatingDTO -> {
                                     int k = userRatingDTO.getPlayNum();
                                     int isC = userRatingDTO.getCollected();
-                                    return Math.min(k, 20)*0.1+isC*3;
+                                    return Math.min(k, 20) * 0.1 + isC * 3;
                                 }
-                        , (oldV, newV) -> oldV,HashMap::new)
+                                , (oldV, newV) -> oldV, HashMap::new)
                 ));
+        synchronized (userRatings){
+            userRatings.clear();
+            userRatings.putAll(collect);
+        }
     }
 
     //为用户生成推荐，最大生成8个推荐
