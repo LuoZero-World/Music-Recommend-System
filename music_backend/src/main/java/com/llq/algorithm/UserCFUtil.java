@@ -4,6 +4,7 @@ import com.llq.entity.AccountRating;
 import com.llq.service.MusicService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -41,8 +42,7 @@ public class UserCFUtil implements RecommendationAlgorithm{
         return  dotProduct / (Math.sqrt(norm1)*Math.sqrt(norm2));
     }
 
-    //TODO 刷新用户评分表 - 开启定时任务定期执行
-    @PostConstruct
+    @Scheduled(fixedDelay = 8000L)
     public void flushRatings(){
         /* 构建用户-音乐评分矩阵 */
         List<AccountRating> list = musicService.getAccountRatingList();
