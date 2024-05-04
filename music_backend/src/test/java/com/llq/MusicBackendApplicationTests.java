@@ -37,9 +37,7 @@ class MusicBackendApplicationTests {
 
     @Test
     void contextLoads() throws FileNotFoundException {
-        String path = this.getClass().getResource("/music").getPath() + "/心墙.mp3";
-        org.springframework.core.io.Resource resource = new InputStreamResource(new FileInputStream(path));
-        System.out.println(resource);
+
     }
 
     @Test

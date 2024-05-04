@@ -1,0 +1,6 @@
+db:
+  mysql:
+    host: mysql
+
+  redis:
+    host: redis

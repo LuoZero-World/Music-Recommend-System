@@ -5,11 +5,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.*;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * @Author 李林麒
@@ -20,9 +22,9 @@ import java.nio.charset.StandardCharsets;
 @RequestMapping("/api/media")
 public class MediaFileController {
     @PostMapping("/music")
-    public ResponseEntity<Resource> downloadMusic(@RequestParam String musicName) throws IOException {
-        String path = this.getClass().getResource("/music").getPath() + "/"+musicName+".mp3";
-        Resource resource = new InputStreamResource(new FileInputStream(path));
+    public ResponseEntity<Resource> downloadMusic(@RequestParam String musicName) {
+        InputStream inputStream = MediaFileController.class.getResourceAsStream("/music/" + musicName + ".mp3");
+        Resource resource = new InputStreamResource(Objects.requireNonNull(inputStream));
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("audio/mpeg"))
@@ -30,9 +32,9 @@ public class MediaFileController {
     }
 
     @PostMapping("/image")
-    public ResponseEntity<Resource> downloadImage(@RequestParam String imageName) throws FileNotFoundException {
-        String path = this.getClass().getResource("/image").getPath() + "/"+imageName+".mp3";
-        Resource resource = new InputStreamResource(new FileInputStream(path));
+    public ResponseEntity<Resource> downloadImage(@RequestParam String imageName) {
+        InputStream inputStream = MediaFileController.class.getResourceAsStream("/music/" + imageName + ".mp3");
+        Resource resource = new InputStreamResource(Objects.requireNonNull(inputStream));
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("image/jpg"))

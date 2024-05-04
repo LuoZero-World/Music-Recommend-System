@@ -129,7 +129,6 @@ const play = async (name, id)=>{
   let url = useBlobStore().getBlobURL(name)
 
   if(url === undefined){
-    console.log('123')
     await postFile('/api/media/music', {
       musicName: name
     }, (response)=>{

@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.llq</groupId>
     <artifactId>music_backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-ALPHA</version>
     <name>music_backend</name>
     <description>music_backend</description>
     <properties>
@@ -88,6 +88,7 @@
     </dependencies>
 
     <build>
+        <finalName>${name}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
