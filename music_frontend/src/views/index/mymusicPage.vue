@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <el-image src="/src/resources/image/mymusic-bacimg.jpg" class="header-img"></el-image>
+    <el-image :src="bacImg" class="header-img"></el-image>
   </div>
   <div style="padding: 20px 40px">
     <div style="padding: 10px">
@@ -33,13 +33,14 @@ import {ref, reactive, onBeforeMount} from "vue";
 import {get, post, postFile} from "@/net";
 import {ElMessage} from "element-plus";
 import {VideoPlay, VideoPause, Delete} from "@element-plus/icons-vue";
-import {useBlobStore} from "@/stores";
+import {useBlobStore, useBlobStore2} from "@/stores";
 
 const user = JSON.parse(sessionStorage.getItem('account'))
 const musicList = reactive([])
 const audio = ref()
 let PlayingName = ""
 let PlayingMap = ref(new Map())
+let bacImg = ref()
 
 const onAudioEnded = () => {
   PlayingMap.value.set(PlayingName, false)
@@ -85,6 +86,18 @@ const remove = (row)=> {
   })
 }
 
+async function getImage(name){
+  let url = useBlobStore2().getBlobURL(name);
+  if(url === undefined){
+    await postFile('/api/media/image', {
+      imageName: name
+    }, (response) =>{
+      url = useBlobStore2().createAndSetBlobURL(name, response.data)
+    })
+  }
+  return url
+}
+
 onBeforeMount(()=>{
   get('/api/music/all-collect-detail', (msg, data)=>{
     Object.assign(musicList, data)
@@ -92,6 +105,9 @@ onBeforeMount(()=>{
       PlayingMap.value.set(music.musicName, false)
     }
   })
+
+  let name = 'mymusic-bacimg'
+  getImage(name).then(url => bacImg.value=url)
 })
 </script>
 

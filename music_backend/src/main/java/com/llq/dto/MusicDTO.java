@@ -9,10 +9,17 @@ import lombok.Data;
  * @Description
  */
 @Data
-@AllArgsConstructor
 public class MusicDTO {
     int id;
     String musicName;
     String author;
     String duration;
+    String musicURL = "";
+
+    public MusicDTO(int id, String musicName, String author, String duration) {
+        this.id = id;
+        this.musicName = musicName;
+        this.author = author;
+        this.duration = duration;
+    }
 }

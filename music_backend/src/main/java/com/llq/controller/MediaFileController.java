@@ -33,12 +33,11 @@ public class MediaFileController {
 
     @PostMapping("/image")
     public ResponseEntity<Resource> downloadImage(@RequestParam String imageName) {
-        InputStream inputStream = MediaFileController.class.getResourceAsStream("/music/" + imageName + ".mp3");
+        InputStream inputStream = MediaFileController.class.getResourceAsStream("/image/" + imageName + ".jpg");
         Resource resource = new InputStreamResource(Objects.requireNonNull(inputStream));
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("image/jpg"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + imageName + "\"")
                 .body(resource);
     }
 }

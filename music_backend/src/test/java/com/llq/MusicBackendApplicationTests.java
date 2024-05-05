@@ -8,6 +8,7 @@ import cn.hutool.json.JSONUtil;
 import com.llq.algorithm.CollaborativeUtil;
 import com.llq.algorithm.ContentUtil;
 import com.llq.algorithm.UserCFUtil;
+import com.llq.controller.MediaFileController;
 import com.llq.entity.tempIDStore;
 import com.llq.mapper.TagMapper;
 import com.llq.service.AuthorizeService;
@@ -21,10 +22,12 @@ import org.springframework.core.io.InputStreamResource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @SpringBootTest
 class MusicBackendApplicationTests {
@@ -37,7 +40,9 @@ class MusicBackendApplicationTests {
 
     @Test
     void contextLoads() throws FileNotFoundException {
-
+        String imageName = "a1";
+        InputStream inputStream = MediaFileController.class.getResourceAsStream("/image/" + imageName + ".jpg");
+        org.springframework.core.io.Resource resource = new InputStreamResource(Objects.requireNonNull(inputStream));
     }
 
     @Test

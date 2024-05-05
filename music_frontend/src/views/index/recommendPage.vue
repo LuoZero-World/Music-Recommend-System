@@ -8,7 +8,7 @@
       <el-main style="display: flex; flex-direction: column; align-items: center">
         <el-row v-for="music in musics" :key="music.id" class="hot-main-item" :gutter="25">
           <el-col :span="6">
-            <el-image fit="contain" class="common" :src="decodeURIComponent(`/src/resources/image/${music.musicName}.jpg`)"></el-image>
+            <el-image fit="contain" class="common" :src="music.musicURL"></el-image>
           </el-col>
           <el-col :span="10" class="hot-item-col2">
             <div class="hot-item-col2-name">{{music.musicName}}</div>
@@ -37,7 +37,7 @@ import {ref, reactive, onBeforeMount, computed} from "vue";
 import {get, post, postFile} from "@/net";
 import {VideoPlay, VideoPause,Star, StarFilled} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import {useBlobStore} from "@/stores";
+import {useBlobStore, useBlobStore2} from "@/stores";
 
 let collectSet = ref(new Set())
 let PlayingMap = ref(new Map())
@@ -46,6 +46,19 @@ const audio = ref()
 const user = JSON.parse(sessionStorage.getItem('account'))
 
 const musics = reactive([])
+
+//获取歌曲图片
+async function getImage(name){
+  let url = useBlobStore2().getBlobURL(name);
+  if(url === undefined){
+    await postFile('/api/media/image', {
+      imageName: name
+    }, (response) =>{
+      url = useBlobStore2().createAndSetBlobURL(name, response.data)
+    })
+  }
+  return url
+}
 
 const onAudioEnded = () => {
   PlayingMap.value.set(PlayingName, false)
@@ -97,7 +110,10 @@ const disCollect = (id) =>{
 
 onBeforeMount(()=>{
   //获取歌曲
-  get('/api/music/recommend5', (msg, data)=>{
+  get('/api/music/recommend5', async (msg, data)=>{
+    for(const d of data){
+     await getImage(d.musicName).then(url => d.musicURL=url)
+    }
     Object.assign(musics, data)
     for(const music in musics){
       PlayingMap.value.set(music.musicName, false)

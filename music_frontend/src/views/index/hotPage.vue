@@ -6,6 +6,7 @@
     </el-carousel-item>
   </el-carousel>
 
+
 <!--  热门推荐模块-->
   <el-container class="hot-all">
 <!--    正栏-->
@@ -19,7 +20,7 @@
           <div class="hot-main">
             <el-row v-for="music in filterMusics" :key="music.id" class="hot-main-item" :gutter="15">
               <el-col :span="6">
-                <el-image fit="contain" class="common" :src="decodeURIComponent(`/src/resources/image/${music.musicName}.jpg`)"></el-image>
+                <el-image fit="contain" class="common" :src="music.musicURL"></el-image>
               </el-col>
               <el-col :span="10" class="hot-item-col2">
                 <div class="hot-item-col2-name">{{music.musicName}}</div>
@@ -79,18 +80,15 @@ import {ref, reactive, onBeforeMount, computed} from "vue";
 import {get, post, postFile} from "@/net";
 import {VideoPlay, VideoPause,Star, StarFilled} from "@element-plus/icons-vue";
 import {ElMessage} from "element-plus";
-import {useBlobStore} from "@/stores";
+import {useBlobStore, useBlobStore2} from "@/stores";
 
 let collectSet = ref(new Set())
 let PlayingMap = ref(new Map())
 let PlayingName = ""
 const audio = ref()
 const user = JSON.parse(sessionStorage.getItem('account'))
-const urls = [
-    '/src/resources/image/a1.jpg',
-    '/src/resources/image/a2.jpg',
-    '/src/resources/image/a3.jpg'
-]
+const urls_name = ['a1', 'a2', 'a3']
+const urls = reactive([])
 
 const musics = reactive([])
 const tags_language = reactive([])
@@ -100,6 +98,30 @@ const state = reactive({
   page: 1,
   limit: 6,
 });
+
+//获取走马灯图片
+for(let i = 0; i < 3; i++){
+  postFile('/api/media/image', {
+    imageName: urls_name[i]
+  }, (response) =>{
+    const url = useBlobStore2().createAndSetBlobURL(urls_name[i], response.data)
+    urls.push(url)
+  })
+}
+
+//获取歌曲图片
+async function getImage(name){
+  let url = useBlobStore2().getBlobURL(name);
+  if(url === undefined){
+      await postFile('/api/media/image', {
+      imageName: name
+    }, (response) =>{
+      url = useBlobStore2().createAndSetBlobURL(name, response.data)
+    })
+  }
+  return url
+}
+
 //改变页码
 const handleCurrentChange = (e) => {
   state.page = e;
@@ -116,8 +138,11 @@ const filterMusics = computed(()=>{
 
 //根据标签ID获取相应热歌
 const getHotMusics = (tagId)=>{
-  get(`api/music/hot/${tagId}`, (msg, data)=>{
+   get(`api/music/hot/${tagId}`, async (msg, data)=>{
     musics.length = 0
+    for(const d of data){
+      await getImage(d.musicName).then(url => d.musicURL=url)
+    }
     Object.assign(musics, data)
   })
 }
@@ -173,7 +198,10 @@ const disCollect = (id) =>{
 
 onBeforeMount(()=>{
   //获取歌曲
-  get('/api/music/hot18', (msg, data)=>{
+  get('/api/music/hot18', async (msg, data)=>{
+    for(const d of data){
+      await getImage(d.musicName).then(url => d.musicURL=url)
+    }
     Object.assign(musics, data)
     for(const music in musics){
       PlayingMap.value.set(music.musicName, false)

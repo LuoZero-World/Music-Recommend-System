@@ -30,7 +30,6 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author 李林麒
@@ -64,7 +63,8 @@ public class SecurityConfiguration {
                     conf.anyRequest().authenticated();
                 })
                 .formLogin(conf->{
-                    conf.loginPage("http://localhost:5173/");
+                    conf.loginPage("http://127.0.0.1:5173");
+//                    conf.loginPage("http://192.168.1.100:8080");
                     conf.loginProcessingUrl("/api/auth/login");
                     conf.successHandler(this::onAuthenticationSuccess);
                     conf.failureHandler(this::onAuthenticationFailure);
@@ -96,40 +96,40 @@ public class SecurityConfiguration {
                 .build();
     }
 
-    @Bean
-    @Order(2)
-    public SecurityFilterChain filterChain_admin(HttpSecurity security) throws Exception {
-        return security
-                .authorizeHttpRequests(conf->{
-                    conf.requestMatchers("/admin/auth/**").permitAll();
-                    conf.anyRequest().authenticated();
-                })
-                .formLogin(conf->{
-                    conf.loginPage("http://localhost:8848/");
-                    conf.loginProcessingUrl("/admin/auth/login");
-                    conf.successHandler(this::onAuthenticationSuccess_admin);
-                    conf.failureHandler(this::onAuthenticationFailure_admin);
-                    conf.permitAll();
-                })
-                .cors(conf->{
-                    CorsConfiguration cors = new CorsConfiguration();
-                    cors.addAllowedOriginPattern("*");
-                    cors.setAllowCredentials(true);
-                    cors.addAllowedHeader("*");
-                    cors.addAllowedMethod("*");
-                    cors.addExposedHeader("*");
-
-                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                    source.registerCorsConfiguration("/**", cors);
-                    conf.configurationSource(source);
-                })
-                .logout(conf->{
-                    conf.logoutUrl("/admin/auth/logout");
-                    conf.logoutSuccessHandler(this::onAuthenticationSuccess);
-                })
-                .csrf(AbstractHttpConfigurer::disable)
-                .build();
-    }
+//    @Bean
+//    @Order(2)
+//    public SecurityFilterChain filterChain_admin(HttpSecurity security) throws Exception {
+//        return security
+//                .authorizeHttpRequests(conf->{
+//                    conf.requestMatchers("/admin/auth/**").permitAll();
+//                    conf.anyRequest().authenticated();
+//                })
+//                .formLogin(conf->{
+//                    conf.loginPage("http://localhost:8848/");
+//                    conf.loginProcessingUrl("/admin/auth/login");
+//                    conf.successHandler(this::onAuthenticationSuccess_admin);
+//                    conf.failureHandler(this::onAuthenticationFailure_admin);
+//                    conf.permitAll();
+//                })
+//                .cors(conf->{
+//                    CorsConfiguration cors = new CorsConfiguration();
+//                    cors.addAllowedOriginPattern("*");
+//                    cors.setAllowCredentials(true);
+//                    cors.addAllowedHeader("*");
+//                    cors.addAllowedMethod("*");
+//                    cors.addExposedHeader("*");
+//
+//                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//                    source.registerCorsConfiguration("/**", cors);
+//                    conf.configurationSource(source);
+//                })
+//                .logout(conf->{
+//                    conf.logoutUrl("/admin/auth/logout");
+//                    conf.logoutSuccessHandler(this::onAuthenticationSuccess);
+//                })
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .build();
+//    }
 
     @Bean
     public PersistentTokenRepository jdbcRepository(){
