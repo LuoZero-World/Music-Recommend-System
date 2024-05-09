@@ -27,10 +27,10 @@ public class CollaborativeUtil implements RecommendationAlgorithm{
         Map<Integer, Double> recommendations1 = normalizeToZeroOne(userCFUtil.getRecommendations(userId));
         Map<Integer, Double> recommendations2 = normalizeToZeroOne(contentUtil.getRecommendations(userId));
 
-        recommendations2.forEach((key, value)->{
-            recommendations1.merge(key, value, (oldV, newV) -> oldV*0.7 + newV*0.3);
+        recommendations1.forEach((key, value)->{
+            recommendations2.merge(key, value, (oldV, newV) -> oldV*0.3 + newV*0.7);
         });
-        LinkedHashMap<Integer, Double> sortedRecommendations = recommendations1.entrySet().stream()
+        LinkedHashMap<Integer, Double> sortedRecommendations = recommendations2.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .limit(5)
                 .collect(Collectors.toMap(

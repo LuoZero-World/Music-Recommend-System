@@ -69,6 +69,8 @@ public class UserCFUtil implements RecommendationAlgorithm{
         //找到目标用户的评分列表
         Map<Integer ,Double> targetRatings = userRatings.get(userId);
 
+        if(targetRatings == null || targetRatings.isEmpty())
+            return Collections.emptyMap();
         /*用户相似度矩阵*/
         //键值对列表存储用户列表中的用户与目标用户的相似度
         List<Map.Entry<Integer, Double>> similaritiesList = userRatings.keySet().stream()
