@@ -49,6 +49,7 @@ const play = async (name, id)=>{
   let url = useBlobStore().getBlobURL(name)
 
   if(url === undefined){
+    ElMessage.success("音乐加载较慢，请稍候")
     await postFile('/api/media/music', {
       musicName: name
     }, (response)=>{
