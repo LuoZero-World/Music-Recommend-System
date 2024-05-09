@@ -68,6 +68,7 @@ const play = async (name, id)=>{
   let url = useBlobStore().getBlobURL(name)
 
   if(url === undefined){
+    ElMessage.success("音乐加载较慢，请稍候")
     await postFile('/api/media/music', {
       musicName: name
     }, (response)=>{
@@ -111,7 +112,7 @@ const disCollect = (id) =>{
 
 onBeforeMount(()=>{
   //获取歌曲
-  get('/api/music/recommend5', async (msg, data)=>{
+  get('/api/music/recommend5', (msg, data)=>{
     for(const d of data){
       d.musicURL = drawingBed+d.musicName+".jpg"
      //await getImage(d.musicName).then(url => d.musicURL=url)

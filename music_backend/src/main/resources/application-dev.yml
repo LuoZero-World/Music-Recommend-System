@@ -4,3 +4,12 @@ db:
 
   redis:
     host: 127.0.0.1
+
+#Same Site²ßÂÔ
+server:
+  servlet:
+    session:
+      cookie:
+        http-only: false
+        same-site: none
+        secure: true

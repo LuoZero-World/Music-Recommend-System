@@ -1,11 +1,5 @@
 server:
     port: 8080
-    servlet:
-      session:
-        cookie:
-            http-only: false
-            same-site: none
-            secure: true
 
 spring:
 

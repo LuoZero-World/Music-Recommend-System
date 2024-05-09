@@ -140,7 +140,7 @@ const filterMusics = computed(()=>{
 
 //根据标签ID获取相应热歌
 const getHotMusics = (tagId)=>{
-   get(`api/music/hot/${tagId}`, async (msg, data)=>{
+   get(`api/music/hot/${tagId}`, (msg, data)=>{
     musics.length = 0
     for(const d of data){
       d.musicURL = drawingBed+d.musicName+".jpg"
@@ -157,6 +157,7 @@ const play = async (name, id)=>{
   let url = useBlobStore().getBlobURL(name)
 
   if(url === undefined){
+    ElMessage.success("音乐加载较慢，请稍候")
     await postFile('/api/media/music', {
       musicName: name
     }, (response)=>{
@@ -201,7 +202,7 @@ const disCollect = (id) =>{
 
 onBeforeMount(()=>{
   //获取歌曲
-  get('/api/music/hot18', async (msg, data)=>{
+  get('/api/music/hot18',  (msg, data)=>{
     for(const d of data){
       d.musicURL = drawingBed+d.musicName+".jpg"
       //await getImage(d.musicName).then(url => d.musicURL=url)
