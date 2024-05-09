@@ -42,6 +42,7 @@ import {useBlobStore, useBlobStore2} from "@/stores";
 let collectSet = ref(new Set())
 let PlayingMap = ref(new Map())
 let PlayingName = ""
+const drawingBed = "https://cdn.jsdelivr.net/gh/LuoZero-World/DrawingBed@main/img/";
 const audio = ref()
 const user = JSON.parse(sessionStorage.getItem('account'))
 
@@ -112,7 +113,8 @@ onBeforeMount(()=>{
   //获取歌曲
   get('/api/music/recommend5', async (msg, data)=>{
     for(const d of data){
-     await getImage(d.musicName).then(url => d.musicURL=url)
+      d.musicURL = drawingBed+d.musicName+".jpg"
+     //await getImage(d.musicName).then(url => d.musicURL=url)
     }
     Object.assign(musics, data)
     for(const music in musics){

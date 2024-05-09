@@ -85,6 +85,7 @@ import {useBlobStore, useBlobStore2} from "@/stores";
 let collectSet = ref(new Set())
 let PlayingMap = ref(new Map())
 let PlayingName = ""
+const drawingBed = "https://cdn.jsdelivr.net/gh/LuoZero-World/DrawingBed@main/img/";
 const audio = ref()
 const user = JSON.parse(sessionStorage.getItem('account'))
 const urls_name = ['a1', 'a2', 'a3']
@@ -101,12 +102,13 @@ const state = reactive({
 
 //获取走马灯图片
 for(let i = 0; i < 3; i++){
-  postFile('/api/media/image', {
-    imageName: urls_name[i]
-  }, (response) =>{
-    const url = useBlobStore2().createAndSetBlobURL(urls_name[i], response.data)
-    urls.push(url)
-  })
+  urls.push(drawingBed+urls_name[i]+".jpg");
+  // postFile('/api/media/image', {
+  //   imageName: urls_name[i]
+  // }, (response) =>{
+  //   const url = useBlobStore2().createAndSetBlobURL(urls_name[i], response.data)
+  //   urls.push(url)
+  // })
 }
 
 //获取歌曲图片
@@ -141,7 +143,8 @@ const getHotMusics = (tagId)=>{
    get(`api/music/hot/${tagId}`, async (msg, data)=>{
     musics.length = 0
     for(const d of data){
-      await getImage(d.musicName).then(url => d.musicURL=url)
+      d.musicURL = drawingBed+d.musicName+".jpg"
+      //await getImage(d.musicName).then(url => d.musicURL=url)
     }
     Object.assign(musics, data)
   })
@@ -200,7 +203,8 @@ onBeforeMount(()=>{
   //获取歌曲
   get('/api/music/hot18', async (msg, data)=>{
     for(const d of data){
-      await getImage(d.musicName).then(url => d.musicURL=url)
+      d.musicURL = drawingBed+d.musicName+".jpg"
+      //await getImage(d.musicName).then(url => d.musicURL=url)
     }
     Object.assign(musics, data)
     for(const music in musics){

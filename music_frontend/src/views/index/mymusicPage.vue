@@ -106,8 +106,7 @@ onBeforeMount(()=>{
     }
   })
 
-  let name = 'mymusic-bacimg'
-  getImage(name).then(url => bacImg.value=url)
+  bacImg.value = "https://cdn.jsdelivr.net/gh/LuoZero-World/DrawingBed@main/img/mymusic-bacimg.jpg";
 })
 </script>
 
