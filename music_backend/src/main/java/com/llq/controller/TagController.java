@@ -39,11 +39,18 @@ public class TagController {
         return RestBean.success(likedTagList, "用户喜好标签获取成功");
     }
 
+    @GetMapping("/has-likedTag-id")
+    public RestBean<Boolean> hasLikedTag(@SessionAttribute("account") AccountDTO account){
+        int userId = account.getId();
+        List<Integer> likedTagList = tagService.getLikedTagIDList(userId);
+        if(likedTagList == null || likedTagList.isEmpty()) return RestBean.success(Boolean.FALSE, "用户无喜好标签");
+        return RestBean.success(Boolean.TRUE, "");
+    }
+
     @PostMapping("/update-all-likedTag")
     public RestBean<String> updateLikedTagOfUser(@SessionAttribute("account") AccountDTO account,
-                                                 @RequestParam("tagList[]")Integer[] tagList){
+                                                 @RequestParam(value = "tagList[]", required = false)Integer[] tagList){
         int userId = account.getId();
-
         if(tagService.updateLikedTagOfUser(userId, tagList)) return RestBean.success("修改成功");
         return RestBean.failure(500, "修改失败");
     }

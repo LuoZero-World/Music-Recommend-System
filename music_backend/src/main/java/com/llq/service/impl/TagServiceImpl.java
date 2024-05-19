@@ -52,8 +52,10 @@ public class TagServiceImpl implements TagService {
         //先删除
         tagMapper.deleteAllLikedTagOfUser(userId);
         //再更新
-        for(int tagId : tagList){
-            tagMapper.insertLikedTagOfUser(userId, tagId);
+        if(tagList != null){
+            for(int tagId : tagList){
+                tagMapper.insertLikedTagOfUser(userId, tagId);
+            }
         }
         return true;
     }

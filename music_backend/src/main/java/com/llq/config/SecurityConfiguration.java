@@ -171,32 +171,32 @@ public class SecurityConfiguration {
         writer.write(RestBean.failure(401, exception.getMessage()).asJsonString());
     }
 
-    void onAuthenticationSuccess_admin(HttpServletRequest request,
-                                 HttpServletResponse response,
-                                 Authentication authentication) throws IOException {
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("application/json");
-        PrintWriter writer = response.getWriter();
-
-        //login请求
-        if(request.getRequestURI().endsWith("login")){
-            String name = authentication.getName();
-            List<String> roles = authentication.getAuthorities()
-                    .stream()
-                    .map(GrantedAuthority::getAuthority).toList();
-            AdminAuthenticationDTO adminAuthenticationDTO = new AdminAuthenticationDTO(true, new AdminAuthenticationDTO.AdminData(name, roles));
-            writer.write(RestBean.success(adminAuthenticationDTO, "登录成功").asJsonString());
-        }
-        //logout请求
-        else if(request.getRequestURI().endsWith("logout"))
-            writer.write(RestBean.success("退出成功").asJsonString());
-    }
-
-    void onAuthenticationFailure_admin(HttpServletRequest request,
-                                 HttpServletResponse response,
-                                 AuthenticationException exception) throws IOException {
-        response.setContentType("application/json;charset=utf-8");
-        PrintWriter writer = response.getWriter();
-        writer.write(RestBean.failure(401, exception.getMessage()).asJsonString());
-    }
+//    void onAuthenticationSuccess_admin(HttpServletRequest request,
+//                                 HttpServletResponse response,
+//                                 Authentication authentication) throws IOException {
+//        response.setCharacterEncoding("utf-8");
+//        response.setContentType("application/json");
+//        PrintWriter writer = response.getWriter();
+//
+//        //login请求
+//        if(request.getRequestURI().endsWith("login")){
+//            String name = authentication.getName();
+//            List<String> roles = authentication.getAuthorities()
+//                    .stream()
+//                    .map(GrantedAuthority::getAuthority).toList();
+//            AdminAuthenticationDTO adminAuthenticationDTO = new AdminAuthenticationDTO(true, new AdminAuthenticationDTO.AdminData(name, roles));
+//            writer.write(RestBean.success(adminAuthenticationDTO, "登录成功").asJsonString());
+//        }
+//        //logout请求
+//        else if(request.getRequestURI().endsWith("logout"))
+//            writer.write(RestBean.success("退出成功").asJsonString());
+//    }
+//
+//    void onAuthenticationFailure_admin(HttpServletRequest request,
+//                                 HttpServletResponse response,
+//                                 AuthenticationException exception) throws IOException {
+//        response.setContentType("application/json;charset=utf-8");
+//        PrintWriter writer = response.getWriter();
+//        writer.write(RestBean.failure(401, exception.getMessage()).asJsonString());
+//    }
 }

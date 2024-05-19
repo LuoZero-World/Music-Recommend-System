@@ -33,11 +33,12 @@
 </template>
 
 <script setup>
-import {ref, reactive, onBeforeMount, computed} from "vue";
+import {ref, reactive, onBeforeMount, computed, onMounted} from "vue";
 import {get, post, postFile} from "@/net";
 import {VideoPlay, VideoPause,Star, StarFilled} from "@element-plus/icons-vue";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import {useBlobStore, useBlobStore2} from "@/stores";
+import router from "@/router";
 
 let collectSet = ref(new Set())
 let PlayingMap = ref(new Map())
@@ -111,17 +112,29 @@ const disCollect = (id) =>{
 }
 
 onBeforeMount(()=>{
-  //获取歌曲
-  get('/api/music/recommend5', (msg, data)=>{
-    for(const d of data){
-      d.musicURL = drawingBed+d.musicName+".jpg"
-     //await getImage(d.musicName).then(url => d.musicURL=url)
-    }
-    Object.assign(musics, data)
-    for(const music in musics){
-      PlayingMap.value.set(music.musicName, false)
+  // 确认有偏好标签才会推荐
+  get('/api/tag/has-likedTag-id', (msg, flag)=>{
+    if(flag === false){
+      ElMessageBox.alert('还未添加偏好标签,点击确认后跳转到个人页面进行添加', 'Warning', {
+        confirmButtonText: '确认',
+        type: 'warning'
+      }).then(() => {
+        router.push('/userInfo')
+      })
+    } else{  //获取歌曲
+      get('/api/music/recommend5', (msg, data)=>{
+        for(const d of data){
+          d.musicURL = drawingBed+d.musicName+".jpg"
+          //await getImage(d.musicName).then(url => d.musicURL=url)
+        }
+        Object.assign(musics, data)
+        for(const music in musics){
+          PlayingMap.value.set(music.musicName, false)
+        }
+      })
     }
   })
+
 })
 </script>
 

@@ -1,11 +1,4 @@
-db:
-  mysql:
-    host: 127.0.0.1
-
-  redis:
-    host: 127.0.0.1
-
-#Same Site²ßÂÔ
+#Homologous strategy
 server:
   servlet:
     session:
@@ -13,3 +6,10 @@ server:
         http-only: false
         same-site: none
         secure: true
+
+db:
+  mysql:
+    host: 127.0.0.1
+
+  redis:
+    host: 127.0.0.1

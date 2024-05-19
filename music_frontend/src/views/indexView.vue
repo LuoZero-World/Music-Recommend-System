@@ -37,10 +37,10 @@
 </template>
 
 <script setup>
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import router from "@/router";
-import {get, postFile} from "@/net"
-import {ref} from "vue";
+import {get} from "@/net"
+import {ref, onMounted} from "vue";
 import {Headset} from "@element-plus/icons-vue";
 
 const user = JSON.parse(sessionStorage.getItem('account'))
@@ -53,7 +53,19 @@ const logout = () =>{
   })
 }
 const activeIndex = ref('2')
-
+onMounted(()=>{
+  get('/api/tag/has-likedTag-id', (msg, flag)=>{
+    if(flag === false){
+      ElMessageBox.alert('还未添加偏好标签,点击确认后跳转到个人页面进行添加', 'Warning', {
+        confirmButtonText: '确认',
+        type: 'warning'
+      }).then(() => {
+        activeIndex.value = '5-1'
+        router.push('/userInfo')
+      })
+    }
+  })
+})
 </script>
 
 <style scoped>
