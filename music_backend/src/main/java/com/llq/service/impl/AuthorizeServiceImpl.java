@@ -65,8 +65,10 @@ public class AuthorizeServiceImpl implements AuthorizeService {
             Account account = mapper.findAccountByNameOrEmail(name);
             if(account == null)
                 throw new UsernameNotFoundException("用户名或密码错误");
+            //这里返回了UserDetail对象，但并不代表认证结束
+            //SpringSecurity还会将UserDetail中的信息与登录时传入的用户名和密码比对
             return User
-                    .withUsername(name)
+                    .withUsername(account.getUsername())
                     .password(account.getPassword())
                     .roles("USER")
                     .build();

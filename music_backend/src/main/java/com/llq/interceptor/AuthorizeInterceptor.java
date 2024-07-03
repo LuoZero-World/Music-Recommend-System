@@ -15,7 +15,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 /**
  * @author 李林麒
  * @date 2023/10/22 9:20
- * @Description 拦截器 注意要在Web配置类中配置
+ * @Description 拦截器,拦截未经过权限校验的请求 注意要在Web配置类中配置
  */
 @Component
 public class AuthorizeInterceptor implements HandlerInterceptor {
