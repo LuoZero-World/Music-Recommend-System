@@ -9,8 +9,8 @@ spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: jdbc:mysql://${db.mysql.host}:3306/music_recommend_separation?useUnicode=true&characterEncoding=utf-8
-        username: root
-        password: llq12345
+        username: 
+        password: 
 
     security:
         user:
@@ -20,11 +20,11 @@ spring:
                 - admin
     mail:
         host: smtp.163.com
-        username: 13097638440@163.com
-        password: KTJAQMCUUGRZHFYO
+        username: 
+        password: 
         default-encoding: UTF-8
         properties:
-            from: 13097638440@163.com
+            from: 
 
     data:
       redis:
