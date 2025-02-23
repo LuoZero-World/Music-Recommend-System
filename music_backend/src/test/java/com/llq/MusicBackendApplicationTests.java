@@ -46,6 +46,13 @@ class MusicBackendApplicationTests {
     }
 
     @Test
+    void musicDownLoad2(){
+        String finnal_url = "";
+        HttpUtil.downloadFile(finnal_url, FileUtil.file("test.mp3"));
+
+    }
+
+    @Test
     void MusicDownLoad(){
         //歌曲名称
         String str = "Butterfly";

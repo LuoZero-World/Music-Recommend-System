@@ -1,6 +1,6 @@
 package com.llq.service.impl;
 
-import com.llq.algorithm.CollaborativeUtil;
+import com.llq.algorithm.RecommendationAlgorithm;
 import com.llq.dto.MusicDTO;
 import com.llq.entity.AccountRating;
 import com.llq.entity.tempIDStore;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,8 +28,9 @@ public class MusicServiceImpl implements MusicService {
     @Resource
     MusicMapper musicMapper;
 
-    @Resource @Lazy
-    CollaborativeUtil collaborativeUtil;
+    @Resource(name="collaborativeUtil")
+    @Lazy
+    RecommendationAlgorithm recommendationAlgorithm;
 
     @Override
     public List<MusicDTO> getHot18Musics() {
@@ -56,7 +56,7 @@ public class MusicServiceImpl implements MusicService {
 
     @Override
     public List<MusicDTO> getRecommendMusicList(int userId) {
-        return collaborativeUtil.getRecommendations(userId).keySet().stream()
+        return recommendationAlgorithm.getRecommendations(userId).keySet().stream()
                 .map(musicId ->  musicMapper.getMusicByID(musicId))
                 .toList();
     }

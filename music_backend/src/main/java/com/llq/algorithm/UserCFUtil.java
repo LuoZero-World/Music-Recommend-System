@@ -93,7 +93,7 @@ public class UserCFUtil implements RecommendationAlgorithm{
                     .collect(Collectors.toMap(      //生成【音乐-预测评分】表，但此时的预测评分只是一部分
                             Map.Entry::getKey,
                             rEntry -> rEntry.getValue() * similarity,
-                            (newV, oldV) -> oldV,
+                            (oldV, newV) -> oldV,
                             HashMap::new
                     ))
                     .forEach((key, value)->{        //音乐预测评分=Σ 用户相似度*用户评分
